@@ -5,33 +5,27 @@ using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using TodoList.Models;
 using TodoList.Controllers;
-
-
+using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 
 namespace TodoList.Models
 {
     public class DatabaseService
     {
-        public DatabaseService()
-        {
-            SetUpDatabase();
-        }
-
-        public void SetUpDatabase()
+        public static void SetUpDatabase(string listname)
         {
             using (var connection = ProvideConnection())
             {
-                BuildSqlCommand(connection, "CREATE TABLE IF NOT EXISTS toDo(id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(50), done TINYINT)").ExecuteNonQuery();
+                BuildSqlCommand(connection, $"CREATE TABLE IF NOT EXISTS {listname}(Id INTEGER PRIMARY KEY AUTOINCREMENT, Name VARCHAR(50), Done TINYINT)").ExecuteNonQuery();
             }
         }
 
-        public SqliteConnection  ProvideConnection()
+        public static SqliteConnection  ProvideConnection()
         {
             var conBuilder = new SqliteConnectionStringBuilder { DataSource = "./todos.db" };
             return new SqliteConnection(conBuilder.ConnectionString);
         }
 
-        public SqliteCommand BuildSqlCommand(SqliteConnection connection, string query)
+        public static SqliteCommand BuildSqlCommand(SqliteConnection connection, string query)
         {
             var cmd = connection.CreateCommand();
             cmd.Connection.Open();
@@ -39,30 +33,7 @@ namespace TodoList.Models
             return cmd;
         }
 
-        internal Task Create(Task task)
-        {
-            using (var connection = ProvideConnection())
-            {
-                BuildSqlCommand(connection, $"INSERT INTO toDo(name, done) VALUES('{task.name}','{task.done}')").ExecuteNonQuery();
-            }
-            return task;
-        }
-
-        public List<Task> Select()
-        {
-            var listOfTasks = new List<Task>();
-            using (var connection = ProvideConnection())
-            {
-                using (var reader = BuildSqlCommand(connection, "SELECT * FROM toDo").ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        listOfTasks.Add(new Task(reader.GetInt32(0), reader.GetString(1), reader.GetBoolean(2)));
-                    }
-                }
-            }
-            return listOfTasks;
-        }
-
-    }
+        
+    
+    }   
 }

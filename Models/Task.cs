@@ -12,9 +12,9 @@ namespace TodoList.Models
 {
     public class Task
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public bool done { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool Done { get; set; }
 
         public Task()
         {
@@ -22,9 +22,9 @@ namespace TodoList.Models
 
         public Task(int id, string name, bool done)
         {
-            this.id = id;
-            this.name = name;
-            this.done = done;
+            this.Id = id;
+            this.Name = name;
+            this.Done = done;
         }
 
         
@@ -33,8 +33,8 @@ namespace TodoList.Models
 
         public static void addTask(Task task)
         {
-            task.id = Task.ToDoList.Count > 0 ? Task.ToDoList.Keys.Max() + 1 : 1; //max needs at least 1 element in dictionary
-            Task.ToDoList.Add(task.id, task);
+            task.Id = Task.ToDoList.Count > 0 ? Task.ToDoList.Keys.Max() + 1 : 1; //max needs at least 1 element in dictionary
+            Task.ToDoList.Add(task.Id, task);
             
         }
 

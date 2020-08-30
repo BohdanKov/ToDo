@@ -10,28 +10,37 @@ using Microsoft.Data.Sqlite;
 
 namespace TodoList.Models
 {
-    [Route("api/tasks")]
+    [Route("api/")]
     [ApiController]
     public class TaskController : ControllerBase
     {
-        public static DatabaseService dataBaseS;
+        [HttpGet("{listname}")]
+        public void Get(string listname)
+        {
+            TaskDataBaseService dataBaseS = new TaskDataBaseService(listname);
+            dataBaseS.Select(listname);
+        }
+        
+        [HttpPost("{listname}")]
+        public void Post(Task task, string listname)
+        {
+            TaskDataBaseService dataBaseS = new TaskDataBaseService(listname);
+            dataBaseS.Create(task, listname);
+        }
 
-        static TaskController()
+        [HttpPatch("{listname}/{id}/{done}")]
+        public void Patch(int id, bool done, string listname)
         {
-            dataBaseS = new DatabaseService();
-        }
-        // GET: api/tasks
-        [HttpGet("")]
-        public IActionResult Get()
-        {
-            return Ok(dataBaseS.Select());
+            TaskDataBaseService dataBaseS = new TaskDataBaseService(listname);
+            dataBaseS.Update(id, done, listname);
         }
 
-        // POST api/tasks
-        [HttpPost("")]
-        public IActionResult Post(Task task)
+        [HttpDelete("{listname}/{id}")]
+        public void Delete(int id, string listname)
         {
-            return Ok(dataBaseS.Create(task));
+            TaskDataBaseService dataBaseS = new TaskDataBaseService(listname);
+            dataBaseS.Remove(id, listname);
         }
+
     }
 }
